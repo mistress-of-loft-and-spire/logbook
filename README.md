@@ -12,5 +12,6 @@ I'd love to hear from you if you use_remix any of this work: banach-tarski 📧 
 
 Love ~v
  
-This dedication excludes any work not created by me, which is copyrighted to their respective creators. I try my best to note any external contributions and adaptations where possible.
+This dedication excludes any work not created by me, which is copyrighted to their respective creators.
+I try my best to mark any external contributions and adaptations where possible.
 ```
