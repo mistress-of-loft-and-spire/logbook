@@ -24,7 +24,8 @@ A lightweight diabetes type I logbook and insulin calculator written with AHK
 This work is dedicated to the public domain under CC0. https://creativecommons.org/publicdomain/zero/1.0/  
  
 That means you are free to use any of my code, art, writing, data, etc. in any way you like.  
-An attribution note is appreciated but not necessary. You can credit me as "voec". If you end up using_remixing this I'd love to hear from you. :)
+An attribution note is appreciated but not necessary. You can credit me as "voec".
+If you end up using_remixing this I'd love to hear from you. :)
 
 love ~v
 
