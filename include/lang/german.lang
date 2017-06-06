@@ -1,0 +1,29 @@
+﻿Language=Deutsch
+Logbook=Logbook
+
+Date=Datum
+Time=Uhrzeit
+Glucose=Blutzucker
+Insulin=Insulin
+Correction=Korrektur
+Factor=Faktor
+CorrectionFactor=Korrekturfaktor
+ShortInsulinUnit=IE
+BolusEffectiveDuration=Bolus Wirkdauer
+TargetRange=Zielbereich
+
+Bolus=Bolus
+Basal=Basal
+
+Food=Essen
+Notes=Bemerkungen
+Health=Gesundheit
+
+OK=&OK
+Cancel=Abbrechen
+Exit=Beenden
+Reminder=Erinnerung
+ReminderText=Zeit zum messen! (^-w-^)/
+
+Hypoglycemia=Hypoglykämie
+Hyperglycemia=Hyperglykämie

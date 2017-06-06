@@ -1,6 +1,21 @@
 # logbook
 A lightweight diabetes type I logbook and insulin calculator written with AHK
 
+## todo
+
+- Add symbol for when there is currently active insulin
+
+- Glucose diagram with hourly graph -> https://autohotkey.com/boards/viewtopic.php?&t=3492
+
+- Language switching
+
+- Set custom time range for basal, correction factor, etc.
+
+- Add better compatibility for comma/point number seperator
+
+- Export to different formats and better csv formatting
+
+
 ## nonlicense
 
 ```
