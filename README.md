@@ -1,6 +1,8 @@
 # logbook
 A lightweight diabetes type I logbook and insulin calculator written with AHK
 
+![image](https://user-images.githubusercontent.com/2915643/26853590-edcfaa6a-4b12-11e7-8ce4-0b7b3b510814.png)
+
 ## todo
 
 - Add symbol for when there is currently active insulin
