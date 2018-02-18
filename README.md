@@ -5,8 +5,6 @@ A lightweight diabetes type I logbook and insulin calculator written with AHK
 
 ## todo
 
-- Add symbol for when there is currently active insulin
-
 - Glucose diagram with hourly graph -> https://autohotkey.com/boards/viewtopic.php?&t=3492
 
 - Language switching

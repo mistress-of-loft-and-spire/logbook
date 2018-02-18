@@ -9,8 +9,11 @@ SetWorkingDir %A_ScriptDir%
 
 #Include include/placeholder.ahk
 #Include include/tooltip.ahk
+#Include include/DateParse.ahk
+#Include include/commapoint.ahk
 
 ; ========== READ VARS FROM INI ==========
+ReadDatatoArray()
 ReadGlobals()
 
 Hotkey, %programHotkey%, OpenGui
@@ -148,8 +151,10 @@ Gui, Add, Progress, x0 y+12 w%guiW% h88 +Disabled Backgroundeeeeee
 
 Gui Add, Edit, xs yp+12 w%dWidth% h%dHeight% c000000 -VScroll Right vtotalBolus gtotalBolusLabel
 Gui Add, Text, x+m y+-25 h25 +BackgroundTrans vtotalBolusText, %langBolus%
+Gui Add, Text, x+20 y+-25 h70 w300 +BackgroundTrans cf65850 vwarnActiveText, 
+CheckActive()
 
-Gui Add, CheckBox, xs-19 y+15 w13 h13 vbasalCheckBox gbasalCheckBoxLabel
+Gui Add, CheckBox, xs-19 y+-30 w13 h13 vbasalCheckBox gbasalCheckBoxLabel
 Gui Add, Edit, x+6 yp-7 w%dWidth% h%dHeight% -VScroll Right +Disabled vtotalBasal gtotalBasalLabel
 Gui Add, Text, x+m y+-25 h25 +BackgroundTrans c777777 vtotalBasalText, %langBasal%
 
@@ -383,46 +388,66 @@ Validate(label, checkComma := false, allowNegative := false)
 }
 
 
-ToPoint(var, returnZero := false)
-{
-	if(var == "" && returnZero)
-	{
-		Return 0
-	}
-    StringReplace, outputVar, var, `,, ., All
-    Return outputVar
-}
-
-ToComma(var)
+CheckActive()
 {
 	global
-
-    var := Round(insulinUnitStep * var) / insulinUnitStep ; Set precision step - 1/2 or 1/4 etc
-    var := RemoveZero(var) ; Remove trailing zeros
-    
-    StringReplace, outputVar, var, ., `,, All
-    Return outputVar
+	
+	time := A_now
+	time += -3, hours
+	
+	warnActive := 
+	
+	if (dataArray._MaxIndex() > 0)
+	{
+		Loop % dataArray._MaxIndex() 
+		{
+			
+			if(dataArray[dataArray._MaxIndex() - A_Index + 1,7] && dataArray[dataArray._MaxIndex() - A_Index + 1,7] > 0)
+			{
+				
+				j := DateParse(dataArray[dataArray._MaxIndex() - A_Index + 1,1] . " " . dataArray[dataArray._MaxIndex() - A_Index + 1,2]) . "00"
+				
+				if (j > time)
+				{
+					warnActive = % warnActive . "" . dataArray[dataArray._MaxIndex() - A_Index + 1,2] . " 💉" . dataArray[dataArray._MaxIndex() - A_Index + 1,7] . "`n"
+				}
+				else
+				{
+					break
+				}
+			}
+		}
+	}
+	
+	GuiControl, Text, warnActiveText, %warnActive%
+	
 }
 
 
-RemoveZero(var)
+ReadDatatoArray()
 {
-    IfNotInString var, .
-        Return var
-    
-    Loop
-    {
-        StringRight, zeroTest, var, 1
-        
-        if (zeroTest == "0" || zeroTest == ".")
-        {
-            StringTrimRight, var, var, 1
-        }
-        else
-        {
-            Return var
-        }
-    }
+	global
+	
+	dataArray := Object()
+	
+	FormatTime, yearValue, %dateValue%, yyyy
+	
+	ifExist, log\%yearValue%.csv
+	{
+	
+		Loop, read, log\%yearValue%.csv
+		{
+			LineNumber = %A_Index%
+			
+			Loop, parse, A_LoopReadLine, CSV
+			{
+				dataArray[LineNumber, A_Index] := A_LoopField
+				
+			}
+		}
+	
+	}
+	
 }
 
 
@@ -515,23 +540,6 @@ ifNotExist, log\%yearValue%.csv
 ), log\%yearValue%.csv
 }
 
-/*
-;Parse a comma separated value (CSV) file - See https://autohotkey.com/board/topic/52762-reading-csv-file/
-Loop, read, log\%yearValue%.csv
-{
-	LineNumber = %A_Index%
-	
-	; save in array (or use stringsplit)
-	Loop, parse, A_LoopReadLine, CSV
-	{
-		Field%A_Index% := A_LoopField
-	}
-	
-	if (InStr(Field1,surname) && InStr(Field2,forename) && InStr(Field3,dob))
-		MsgBox,4160,Register,%Forename% %Surname% %DoB% on Register!`r`rRow Number: %A_Index% in Register.csv file
-}
-*/
-
 ; Format time for writing
 FormatTime, dateValue, %dateValue%, dd.MM.yy
 FormatTime, timeValue, %timeValue%, HH:mm
@@ -595,6 +603,8 @@ GuiControl,,totalBolus
 GuiControl,,basalCheckBox, 0
 GuiControl,,totalBasal
 GuiControl,Disable,totalBasal
+
+CheckActive()
 
 GuiControl,,notes
 
