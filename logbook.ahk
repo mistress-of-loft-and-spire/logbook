@@ -132,7 +132,7 @@ Gui Font, s13
 Gui Add, Edit, x+m yp+2 w%dWidth% h%dHeight% -VScroll Right Section vfoodValue gfoodLabel
 Gui Add, Text, x+m y+-25 h25, %labelFoodUnit%
 Gui Font, s10
-Gui Add, Edit, xs y+m w%guiEditWidth% h38 Multi vfoodText hwndhFood +Disabled
+Gui Add, Edit, xs y+m w%guiEditWidth% h38 Multi vfoodText hwndhFood
 Gui Font, s13
 
 Gui Add, Text, x16 y+12 w%guiLineWidth% h2 0x10
@@ -217,7 +217,6 @@ Gui Submit, NoHide
 
 if (Validate("foodValue") && foodValue > 0)
 {
-    GuiControl, Enable, foodText
     GuiControl, Enable, foodInsulin
     GuiControl, Enable, foodInsulinText
     
@@ -226,7 +225,6 @@ if (Validate("foodValue") && foodValue > 0)
 }
 else
 {
-    GuiControl, Disable, foodText
     GuiControl, Disable, foodInsulin
     GuiControl, Disable, foodInsulinText
     
