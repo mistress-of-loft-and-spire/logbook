@@ -16,6 +16,8 @@ SetWorkingDir %A_ScriptDir%
 ReadDatatoArray()
 ReadGlobals()
 
+global dataIndex := -1
+
 Hotkey, %programHotkey%, OpenGui
 
 ; ========== Reminder TIMER ==========
@@ -168,7 +170,7 @@ Gui Add, Edit, x+m yp+2 w%guiEditWidth% h38 Multi Section vnotes hwndhNotes
 
 Gui Add, Text, x16 y+12 w%guiLineWidth% h2 0x10
 
-Gui Add, Button, x%guiButtonX% y+12 w90 h%bHeight% +Default gEnter, %langOK%
+Gui Add, Button, x%guiButtonX% y+12 w90 h%bHeight% +Default gEnter vOK, %langOK%
 Gui Add, Button, x+m w90 h%bHeight% gGuiClose, %langCancel%
 
 Placeholder(hFood, langFood)
@@ -514,8 +516,226 @@ Return
 
 
 
+
+
+
+New:
+; Reset all controls
+
+GuiControl,Text,OK, %langOk%
+GuiControl,Enable,OK
+
+GuiControl,Disable,TTNew
+GuiControl,Disable,TTRight
+GuiControl,Enable,TTLeft
+
+GuiControl,,timeValue, %A_Now%
+GuiControl,,dateValue, %A_Now%
+
+GuiControl,,glucoseValue
+
+GuiControl,,foodValue
+
+GuiControl,,foodText
+
+GuiControl,,foodInsulin
+
+GuiControl,,correctionInsulin
+
+GuiControl,,totalBolus
+
+GuiControl,,basalCheckBox, 0
+GuiControl,,totalBasal
+
+CheckActive()
+
+GuiControl,,notes
+
+GuiControl,Enable,timeValue
+GuiControl,Enable,dateValue
+GuiControl,Enable,glucoseValue
+GuiControl,Enable,foodValue
+GuiControl,Enable,foodText
+GuiControl,Disable,foodInsulin
+GuiControl,Disable,foodInsulinLabel
+GuiControl,Enable,correctionInsulin
+GuiControl,Enable,totalBolus
+GuiControl,Enable,basalCheckBox
+GuiControl,Disable,totalBasal
+GuiControl,Enable,notes
+
+Placeholder(hFood, langFood)
+Placeholder(hNotes, langNotes)
+
+GuiControl, Focus, glucoseValue
+
+dataIndex := -1
+
+Return
+
+
+
+Left:
+
+if(dataIndex == -1)
+{
+	dataIndex := dataArray._MaxIndex()
+	
+	GuiControl,Enable,TTNew
+	GuiControl,Enable,TTRight
+	
+	GuiControl,Text,OK, %langChange%
+	GuiControl,Disable,OK
+}
+else if(dataIndex > 0)
+{
+	dataIndex -= 1
+	
+	if(dataIndex <= 1)
+	{
+		GuiControl,Disable,TTLeft
+	}
+}
+
+showData()
+
+Return
+
+
+
+Right:
+
+if(dataIndex < dataArray._MaxIndex())
+{
+	dataIndex += 1
+	
+	if(dataIndex > 0)
+	{
+		GuiControl,Enable,TTLeft
+	}
+	
+	showData()
+}
+else if(dataIndex == dataArray._MaxIndex())
+{
+	Goto, New
+}
+
+Return
+
+
+showData()
+{
+	global
+
+	GuiControl,,timeValue, % DateParse(dataArray[dataIndex,1] . " " . dataArray[dataIndex,2]) . "00"
+	GuiControl,,dateValue, % DateParse(dataArray[dataIndex,1] . " " . dataArray[dataIndex,2]) . "00"
+	
+	GuiControl,Text,glucoseValue, % dataArray[dataIndex,3]
+
+	GuiControl,,foodValue, % dataArray[dataIndex,4]
+
+	GuiControl,,foodText, % dataArray[dataIndex,9]
+
+	GuiControl,,foodInsulin, % dataArray[dataIndex,5]
+
+	GuiControl,,correctionInsulin, % dataArray[dataIndex,6]
+
+	GuiControl,,totalBolus, % dataArray[dataIndex,7]
+
+	if(dataArray[dataIndex,8] && dataArray[dataIndex,8] > 0)
+	{
+		setBasalCheckBox := 1
+		
+		Gui, Font, c000000 s13
+		GuiControl, Font, totalBasalText
+		GuiControl, MoveDraw, totalBasalText
+		Gui, Font, s10
+	}
+	else
+	{
+		setBasalCheckBox := 0
+		
+		Gui, Font, c7777777 s13
+		GuiControl, Font, totalBasalText
+		GuiControl, MoveDraw, totalBasalText
+		Gui, Font, s10
+	}
+	
+	GuiControl,,basalCheckBox, % setBasalCheckBox
+	GuiControl,,totalBasal,  % dataArray[dataIndex,8]
+	
+	GuiControl, Text, warnActiveText, 
+
+	GuiControl,,notes, % dataArray[dataIndex,10]
+	
+	Gui, Font, c000000 s10
+    GuiControl, Font, foodText
+	GuiControl, Font, notes
+    Gui, Font, s10
+	
+	GuiControl,Disable,timeValue
+	GuiControl,Disable,dateValue
+	GuiControl,Disable,glucoseValue
+	GuiControl,Disable,foodValue
+	GuiControl,Disable,foodText
+	GuiControl,Disable,foodInsulin
+	GuiControl,Disable,correctionInsulin
+	GuiControl,Disable,totalBolus
+	GuiControl,Disable,basalCheckBox
+	GuiControl,Disable,totalBasal
+	GuiControl,Disable,notes
+}
+
+
+
+Export:
+FormatTime, yearValue, %dateValue%, yyyy
+Run, C:\Windows\Notepad.exe "log\%yearValue%.csv"
+Return
+
+
+
+Open:
+FormatTime, yearValue, %dateValue%, yyyy
+Run, C:\Windows\Notepad.exe "log\%yearValue%.csv"
+Return
+
+
+
+Settings:
+RunWait, C:\Windows\Notepad.exe "settings.ini"
+ReadGlobals()
+msgbox, Settings Updated!
+Return
+
+
+
+
+
+
 NumpadEnter::
 Enter:
+
+/*
+if(dataIndex != -1)
+{
+
+	GuiControl,Enable,timeValue
+	GuiControl,Enable,dateValue
+	GuiControl,Enable,glucoseValue
+	GuiControl,Enable,foodValue
+	GuiControl,Enable,foodText
+	GuiControl,Disable,foodInsulin
+	GuiControl,Disable,foodInsulinLabel
+	GuiControl,Enable,correctionInsulin
+	GuiControl,Enable,totalBolus
+	GuiControl,Enable,basalCheckBox
+	GuiControl,Disable,totalBasal
+	GuiControl,Enable,notes
+	Return
+}
+*/
 
 Gui Submit, NoHide
 
@@ -572,67 +792,6 @@ else if (glucoseValue > insulinTargetUpper)
 {
 	hyperActive := true
 }
-
-
-
-New:
-; Reset all controls
-
-GuiControl,Disable,TTNew
-GuiControl,Disable,TTRight
-
-GuiControl,,timeValue, %A_Now%
-GuiControl,,dateValue, %A_Now%
-
-GuiControl,,glucoseValue
-
-GuiControl,,foodValue
-
-GuiControl,,foodText
-GuiControl,Disable,foodText
-
-GuiControl,,foodInsulin
-GuiControl,Disable,foodInsulin
-
-GuiControl,,correctionInsulin
-
-GuiControl,,totalBolus
-
-GuiControl,,basalCheckBox, 0
-GuiControl,,totalBasal
-GuiControl,Disable,totalBasal
-
-CheckActive()
-
-GuiControl,,notes
-
-Placeholder(hFood, langFood)
-Placeholder(hNotes, langNotes)
-
-GuiControl, Focus, glucoseValue
-Return
-
-Left:
-Return
-
-Right:
-Return
-
-Export:
-FormatTime, yearValue, %dateValue%, yyyy
-Run, C:\Windows\Notepad.exe "log\%yearValue%.csv"
-Return
-
-Open:
-FormatTime, yearValue, %dateValue%, yyyy
-Run, C:\Windows\Notepad.exe "log\%yearValue%.csv"
-Return
-
-Settings:
-RunWait, C:\Windows\Notepad.exe "settings.ini"
-ReadGlobals()
-msgbox, Settings Updated!
-Return
 
 
 GuiEscape:
