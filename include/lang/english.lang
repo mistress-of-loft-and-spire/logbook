@@ -21,7 +21,21 @@ Health=Health
 
 OK=&OK
 Cancel=Cancel
+Left=◀️
+Right=▶️
+New=➕
+Export=📤
+Open=📂
+Settings=🔧
+TooltipLeft=Previous Entry
+TooltipRight=Next Entry
+TooltipNew=New Entry
+TooltipExport=Export Data
+TooltipOpen=Open Raw Data
+TooltipSettings=Settings
+
 Exit=E&xit
+
 Reminder=Reminder
 ReminderText=Time to check! (^-w-^)/
 

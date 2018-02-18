@@ -21,7 +21,22 @@ Health=Gesundheit
 
 OK=&OK
 Cancel=Abbrechen
+
+Left=◀️
+Right=▶️
+New=➕
+Export=📤
+Open=📂
+Settings=🔧
+TooltipLeft=Vorheriger Eintrag
+TooltipRight=Nächster Eintrag
+TooltipNew=Neuer Eintrag
+TooltipExport=Daten exportieren
+TooltipOpen=Rohdaten öffnen
+TooltipSettings=Einstellungen
+
 Exit=Beenden
+
 Reminder=Erinnerung
 ReminderText=Zeit zum messen! (^-w-^)/
 

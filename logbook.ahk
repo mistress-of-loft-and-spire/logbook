@@ -8,6 +8,7 @@
 SetWorkingDir %A_ScriptDir%
 
 #Include include/placeholder.ahk
+#Include include/tooltip.ahk
 
 ; ========== READ VARS FROM INI ==========
 ReadGlobals()
@@ -46,9 +47,17 @@ Menu, tray, NoStandard
 Menu, tray, Add, %langExit%, Exit
 Menu, tray, Default, %langExit%
 
+
+;DEBUG
+;
+Goto, OpenGui
+;
 Return
-
-
+;
+F5::
+Reload
+Return
+;
 
 OpenGui:
 
@@ -64,21 +73,39 @@ Gui Color, White
 Gui Margin, 8, 8
 dHeight := 28
 dWidth := dHeight * 2
+bHeight := 34
 
 ; ========== GUI POSITION & SIZE ==========
 SysGet, MonitorWorkArea, MonitorWorkArea
 guiW := 276
-guiH := 510
+guiH := 566
 guiX := MonitorWorkAreaRight - guiW - 10
 guiY := MonitorWorkAreaBottom - guiH - 33
 
 guiLineWidth := guiW - 29
 guiEditWidth := guiW - 60
-guiButtonX := guiW - 183
+guiButtonX := guiW - 203
 
 ; ========== GUI CONTROLS ==========
+Gui, Add, Progress, x0 y0 w%guiW% h48 +Disabled Backgroundeeeeee
+
+Gui Font, s12, Segoe UI Symbol
+Gui Add, Button, x8 yp+7 w%bHeight% h%bHeight% gLeft vTTLeft, %langLeft%
+Gui Add, Button, x+0 w%bHeight% h%bHeight% gRight vTTRight Disabled, %langRight%
+Gui Add, Button, x+16 w%bHeight% h%bHeight% gNew vTTNew Disabled, %langNew%
+Gui Add, Button, x+24 w%bHeight% h%bHeight% gOpen vTTOpen, %langOpen%
+Gui Add, Button, x+0 w%bHeight% h%bHeight% gExport vTTExport Disabled, %langExport%
+Gui Add, Button, x+16 w%bHeight% h%bHeight% gSettings vTTSettings, %langSettings%
+
+TTLeft_TT = %langTooltipLeft%
+TTRight_TT = %langTooltipRight%
+TTNew_TT = %langTooltipNew%
+TTOpen_TT = %langTooltipOpen%
+TTExport_TT = %langTooltipExport%
+TTSettings_TT = %langTooltipSettings%
+
 Gui Font, s15, Segoe UI Symbol
-Gui Add, Text, x16 y+11 w20 h%dHeight%+1, 🕓
+Gui Add, Text, x16 y+18 w20 h%dHeight%+1, 🕓
 Gui Font
 Gui Font, s13
 Gui Add, DateTime, x+m yp+1 w80 h28 vtimeValue 1, HH:mm
@@ -102,7 +129,7 @@ Gui Font, s13
 Gui Add, Edit, x+m yp+2 w%dWidth% h%dHeight% -VScroll Right Section vfoodValue gfoodLabel
 Gui Add, Text, x+m y+-25 h25, %labelFoodUnit%
 Gui Font, s10
-Gui Add, Edit, xs y+m w%guiEditWidth% h38 Multi vfood hwndhFood +Disabled
+Gui Add, Edit, xs y+m w%guiEditWidth% h38 Multi vfoodText hwndhFood +Disabled
 Gui Font, s13
 
 Gui Add, Text, x16 y+12 w%guiLineWidth% h2 0x10
@@ -136,8 +163,8 @@ Gui Add, Edit, x+m yp+2 w%guiEditWidth% h38 Multi Section vnotes hwndhNotes
 
 Gui Add, Text, x16 y+12 w%guiLineWidth% h2 0x10
 
-Gui Add, Button, x%guiButtonX% y+12 w80 h%dHeight% +Default gEnter, %langOK%
-Gui Add, Button, x+m w80 h%dHeight% gGuiClose, %langCancel%
+Gui Add, Button, x%guiButtonX% y+12 w90 h%bHeight% +Default gEnter, %langOK%
+Gui Add, Button, x+m w90 h%bHeight% gGuiClose, %langCancel%
 
 Placeholder(hFood, langFood)
 Placeholder(hNotes, langNotes)
@@ -185,7 +212,7 @@ Gui Submit, NoHide
 
 if (Validate("foodValue") && foodValue > 0)
 {
-    GuiControl, Enable, food
+    GuiControl, Enable, foodText
     GuiControl, Enable, foodInsulin
     GuiControl, Enable, foodInsulinText
     
@@ -194,7 +221,7 @@ if (Validate("foodValue") && foodValue > 0)
 }
 else
 {
-    GuiControl, Disable, food
+    GuiControl, Disable, foodText
     GuiControl, Disable, foodInsulin
     GuiControl, Disable, foodInsulinText
     
@@ -512,7 +539,7 @@ FormatTime, timeValue, %timeValue%, HH:mm
 ; If only placeholder text is shown, leave field empty
 if (Placeholder(hFood))
 {
-	food = 
+	foodText = 
 }
 if (Placeholder(hNotes))
 {
@@ -522,7 +549,7 @@ if (Placeholder(hNotes))
 FileAppend,
 (
 
-"%dateValue%","%timeValue%","%glucoseValue%","%foodValue%","%foodInsulin%","%correctionInsulin%","%totalBolus%","%totalBasal%","%food%","%notes%"
+"%dateValue%","%timeValue%","%glucoseValue%","%foodValue%","%foodInsulin%","%correctionInsulin%","%totalBolus%","%totalBasal%","%foodText%","%notes%"
 ), log\%yearValue%.csv
 
 ; Reset reminder timer
@@ -539,6 +566,65 @@ else if (glucoseValue > insulinTargetUpper)
 {
 	hyperActive := true
 }
+
+
+
+New:
+; Reset all controls
+
+GuiControl,Disable,TTNew
+GuiControl,Disable,TTRight
+
+GuiControl,,timeValue, %A_Now%
+GuiControl,,dateValue, %A_Now%
+
+GuiControl,,glucoseValue
+
+GuiControl,,foodValue
+
+GuiControl,,foodText
+GuiControl,Disable,foodText
+
+GuiControl,,foodInsulin
+GuiControl,Disable,foodInsulin
+
+GuiControl,,correctionInsulin
+
+GuiControl,,totalBolus
+
+GuiControl,,basalCheckBox, 0
+GuiControl,,totalBasal
+GuiControl,Disable,totalBasal
+
+GuiControl,,notes
+
+Placeholder(hFood, langFood)
+Placeholder(hNotes, langNotes)
+
+GuiControl, Focus, glucoseValue
+Return
+
+Left:
+Return
+
+Right:
+Return
+
+Export:
+FormatTime, yearValue, %dateValue%, yyyy
+Run, C:\Windows\Notepad.exe "log\%yearValue%.csv"
+Return
+
+Open:
+FormatTime, yearValue, %dateValue%, yyyy
+Run, C:\Windows\Notepad.exe "log\%yearValue%.csv"
+Return
+
+Settings:
+RunWait, C:\Windows\Notepad.exe "settings.ini"
+ReadGlobals()
+msgbox, Settings Updated!
+Return
 
 
 GuiEscape:
