@@ -19,7 +19,7 @@ Food=Food
 Notes=Notes
 Health=Health
 
-OK=&OK
+OK=OK
 Cancel=Cancel
 Left=◀️
 Right=▶️
@@ -34,7 +34,7 @@ TooltipExport=Export Data
 TooltipOpen=Open Raw Data
 TooltipSettings=Settings
 
-Exit=E&xit
+Exit=Exit
 
 Reminder=Reminder
 ReminderText=Time to check! (^-w-^)/
