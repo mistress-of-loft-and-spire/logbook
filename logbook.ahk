@@ -92,7 +92,7 @@ guiEditWidth := guiW - 60
 guiButtonX := guiW - 203
 
 ; ========== GUI CONTROLS ==========
-Gui, Add, Progress, x0 y0 w%guiW% h48 +Disabled Backgroundeeeeee
+Gui, Add, Progress, x0 y0 w%guiW% h48 +Disabled Backgroundbbbbbb
 
 Gui Font, s12, Segoe UI Symbol
 Gui Add, Button, x8 yp+7 w%bHeight% h%bHeight% gLeft vTTLeft, %langLeft%
