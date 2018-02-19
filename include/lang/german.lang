@@ -11,6 +11,8 @@ CorrectionFactor=Korrekturfaktor
 ShortInsulinUnit=IE
 BolusEffectiveDuration=Bolus Wirkdauer
 TargetRange=Zielbereich
+DiabetesDiary=Diabetes Tagebuch
+ShortMinutes=min
 
 Bolus=Bolus
 Basal=Basal

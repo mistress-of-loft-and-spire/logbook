@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+<meta charset="utf-8">
+	
+<title>%htmlTitle%</title>
+	
+<style type="text/css">
+
+/* https://github.com/cognitom/paper-css */
+	
+.sheet,body{margin:0}@page{margin:0}.sheet{overflow:hidden;position:relative;box-sizing:border-box;page-break-after:always}body.A3 .sheet{width:297mm;height:419mm}body.A3.landscape .sheet{width:420mm;height:296mm}body.A4 .sheet{width:210mm;height:296mm}body.A4.landscape .sheet{width:297mm;height:209mm}body.A5 .sheet{width:148mm;height:209mm}body.A5.landscape .sheet{width:210mm;height:147mm}body.letter .sheet{width:216mm;height:279mm}body.letter.landscape .sheet{width:280mm;height:215mm}body.legal .sheet{width:216mm;height:356mm}body.legal.landscape .sheet{width:357mm;height:215mm}.sheet.padding-10mm{padding:10mm}.sheet.padding-15mm{padding:15mm}.sheet.padding-20mm{padding:20mm}.sheet.padding-25mm{padding:25mm}@media screen{body{background:#333}.sheet{background:#fff;box-shadow:0 .5mm 2mm rgba(0,0,0,.3);margin:5mm auto}}@media print{body.A3.landscape{width:420mm}body.A3,body.A4.landscape{width:297mm}body.A4,body.A5.landscape{width:210mm}body.A5{width:148mm}body.legal,body.letter{width:216mm}body.letter.landscape{width:280mm}body.legal.landscape{width:357mm}}
+
+</style>
+
+
+<style>
+
+@page {
+	size: A4
+}
+
+.sheet {
+  overflow: visible;
+  height: auto !important;
+}
+
+body {
+	font-family: sans-serif;
+	font-size: 3.2mm;
+}
+
+@media print {
+    body {
+        -webkit-print-color-adjust: exact; /*Chrome, Safari */
+        color-adjust: exact; /*Firefox*/
+    }
+}
+
+
+.block {
+	padding: 15mm 10mm 10mm 10mm;
+	page-break-inside: avoid;
+}
+
+.title {
+	margin: 0 0 4mm 2mm;
+	font-size: 1.2em;
+}
+
+
+table, th, td {
+    border: 0.3mm solid #aaa;
+    border-collapse: collapse;
+	text-align: center;
+}
+
+table {
+	width: 100%;
+	border: none;
+}
+
+th, td {
+	min-width: 5.2mm;
+	max-width: 5.2mm;
+}
+
+td {
+	height: 7.8mm;
+}
+
+th {
+	text-align: left;
+	
+	border: none;
+
+	white-space: nowrap;
+	
+	padding-top: 16mm;
+	
+	transform: translate(3.1mm, 3.6mm) rotate(-45deg);
+	transform-origin: left bottom;
+	box-sizing: border-box;
+}
+
+th span {
+	border-top: 0.3mm solid #aaa;
+	padding-top: 0.5mm;
+	padding-left: 6.5mm;
+	float: left;
+	width: 23mm;
+}
+
+th:nth-child(n+3):nth-child(-n+13) span {
+	border: none;
+	float: left;
+	
+	font-size: 0.8em;
+
+	color: #aaa;
+	
+	transform: translate(-6.5mm, -2.5mm);
+}
+
+th > div > span {
+  border-bottom: 1px solid #ccc;
+  padding: 5px 10px;
+}
+
+
+tr {
+    background-color: #fff;
+}
+
+td:nth-child(1) {
+	min-width: 9mm;
+	max-width: 9mm;
+}
+
+td:nth-child(n+2):nth-child(-n+13) {
+	background-color:#c1d3ea;
+}
+
+td:nth-child(n+%htmlTargetStart%):nth-child(-n+%htmlTargetEnd%) {
+	background-color:#e7ebf3;
+}
+
+td:nth-child(n+17):nth-child(-n+18) {
+	background-color: #e7ebf3;
+}
+
+td:nth-child(19), td:nth-child(20) {
+	min-width: 30mm;
+	max-width: 30mm;
+	text-align: left;
+	font-size: 0.7em;
+	hyphens: auto;
+	padding: 0.5mm 0 0.5mm 1mm;
+}
+
+td:nth-child(20) {
+	min-width: 20mm;
+	max-width: 20mm;
+}
+
+</style>
+
+
+</head>
+
+<body class="A4">
+
+  <section class="sheet">
+  
+	<div class="block">
+	
+	<div class="title">
+	<p><b>%langDiabetesDiary%</b>&emsp;&emsp;&emsp;%generalName%</p>
+	<p><b>%htmlDateStart% - %htmlDateEnd%</b></p>
+	
+	<p>&emsp;</p>	
+	<p><hr></p>
+	<p>&emsp;</p>
+	
+	<p>%langBolus% %langInsulin%:&emsp;<b>%generalBolusName%</b></p>
+	<p>%labelFoodUnit% %langFactor%:&emsp;<b>%insulinFoodFactorMorning% / %insulinFoodFactorMidday% / %insulinFoodFactorEvening% %langShortInsulinUnit%</b>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;%langCorrectionFactor% / %langShortInsulinUnit%:&emsp;<b>%insulinCorrectionFactor% %labelGlucoseUnit%</b></p>
+	<p>%langBolusEffectiveDuration%:&emsp;<b>%insulinBolusDuration% %langShortMinutes%</b>&emsp;&emsp;&emsp;&emsp;%langTargetRange%:&emsp;<b>%insulinTargetLower% - %insulinTargetUpper% %labelGlucoseUnit%</b></p>
+	
+	<p>&emsp;</p>
+	<p><hr></p>
+	<p>&emsp;</p>
+	<p>%langBasal% %langInsulin%:&emsp;<b>%generalBasalName%</b></p>
+	
+	<p>%langBasal%:&emsp;<b>%insulinBasalMorning% / %insulinBasalMidday% / %insulinBasalEvening% %langShortInsulinUnit%</b></p>
+	
+	
+	
+	</div>
+	
+	</div>
+	
+	
+	%htmlBlock%
+	
+	
+  </section>
+	
+  
+</body>
+
+</html>

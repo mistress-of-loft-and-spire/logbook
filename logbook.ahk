@@ -92,7 +92,7 @@ guiEditWidth := guiW - 60
 guiButtonX := guiW - 203
 
 ; ========== GUI CONTROLS ==========
-Gui, Add, Progress, x0 y0 w%guiW% h48 +Disabled Backgroundbbbbbb
+Gui, Add, Progress, x0 y0 w%guiW% h48 +Disabled Background333333
 
 Gui Font, s12, Segoe UI Symbol
 Gui Add, Button, x8 yp+7 w%bHeight% h%bHeight% gLeft vTTLeft, %langLeft%
@@ -735,17 +735,9 @@ if(dataIndex != -1)
 	GuiControl,Enable,notes
 	Return
 }
-*/
 
-Gui Submit, NoHide
 
-FormatTime, yearValue, %dateValue%, yyyy
-
-ifNotExist, log\%yearValue%.csv
-{
-	FileCreateDir, log
-	
-	FileAppend,
+FileAppend,
 (
 "%generalName%",,,"%labelFoodUnit% %langFactor%",,"%langCorrectionFactor% / %langShortInsulinUnit%",,"%langBasal%",,
 ,,,"%insulinFoodFactorMorning% / %insulinFoodFactorMidday% / %insulinFoodFactorEvening%",,"%insulinCorrectionFactor%",,"%insulinBasalMorning% / %insulinBasalMidday% / %insulinBasalEvening%",,
@@ -756,11 +748,31 @@ ifNotExist, log\%yearValue%.csv
 %langDate%,%langTime%,%langGlucose% (%labelGlucoseUnit%),%labelFoodUnit%,%labelFoodUnit% %langInsulin%,%langCorrection%,%langBolus%,%langBasal%,%langFood%,%langNotes%
 ,,,,,,,,,
 ), log\%yearValue%.csv
+
+
+FileAppend,
+(
+
+"%dateValue%","%timeValue%","%glucoseValue%","%foodValue%","%foodInsulin%","%correctionInsulin%","%totalBolus%","%totalBasal%","%foodText%","%notes%"
+), log\%yearValue%.csv
+
+
+*/
+
+
+
+Gui Submit, NoHide
+
+FormatTime, yearValue, %dateValue%, yyyy
+
+ifNotExist, log\%yearValue%.csv
+{
+	FileCreateDir, log
 }
 
 ; Format time for writing
-FormatTime, dateValue, %dateValue%, dd.MM.yy
-FormatTime, timeValue, %timeValue%, HH:mm
+FormatTime, dateWrite, %dateValue%, dd.MM.yy
+FormatTime, timeWrite, %timeValue%, HH:mm
 
 ; If only placeholder text is shown, leave field empty
 if (Placeholder(hFood))
@@ -772,11 +784,41 @@ if (Placeholder(hNotes))
 	notes = 
 }
 
-FileAppend,
-(
 
-"%dateValue%","%timeValue%","%glucoseValue%","%foodValue%","%foodInsulin%","%correctionInsulin%","%totalBolus%","%totalBasal%","%foodText%","%notes%"
-), log\%yearValue%.csv
+time := DateParse(dateWrite . " " . timeWrite) . "00"
+
+if (dataArray._MaxIndex() > 0)
+{
+	Loop % dataArray._MaxIndex() 
+	{
+		
+		j := DateParse(dataArray[dataArray._MaxIndex() - A_Index + 1,1] . " " . dataArray[dataArray._MaxIndex() - A_Index + 1,2]) . "00"
+				
+		if (j < time)
+		{
+			dataArray.InsertAt(dataArray._MaxIndex() - A_Index + 2,[dateWrite,timeWrite,glucoseValue,foodValue,foodInsulin,correctionInsulin,totalBolus,totalBasal,foodText,notes])
+			
+			break
+		}
+		else if (A_Index == dataArray._MaxIndex())
+		{
+			dataArray.InsertAt(dataArray._MaxIndex() - A_Index + 1,[dateWrite,timeWrite,glucoseValue,foodValue,foodInsulin,correctionInsulin,totalBolus,totalBasal,foodText,notes])
+			
+			break
+		}
+		
+	}
+}
+
+Loop % dataArray._MaxIndex() 
+{
+
+	FileAppend,
+	(
+% "`na"
+	), log\%yearValue%.csv
+
+}
 
 ; Reset reminder timer
 
