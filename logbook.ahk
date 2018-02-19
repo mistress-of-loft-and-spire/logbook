@@ -99,7 +99,7 @@ Gui Add, Button, x8 yp+7 w%bHeight% h%bHeight% gLeft vTTLeft, %langLeft%
 Gui Add, Button, x+0 w%bHeight% h%bHeight% gRight vTTRight Disabled, %langRight%
 Gui Add, Button, x+16 w%bHeight% h%bHeight% gNew vTTNew Disabled, %langNew%
 Gui Add, Button, x+24 w%bHeight% h%bHeight% gOpen vTTOpen, %langOpen%
-Gui Add, Button, x+0 w%bHeight% h%bHeight% gExport vTTExport Disabled, %langExport%
+Gui Add, Button, x+0 w%bHeight% h%bHeight% gExport vTTExport, %langExport%
 Gui Add, Button, x+16 w%bHeight% h%bHeight% gSettings vTTSettings, %langSettings%
 
 TTLeft_TT = %langTooltipLeft%
@@ -690,8 +690,59 @@ showData()
 
 
 Export:
-FormatTime, yearValue, %dateValue%, yyyy
-Run, C:\Windows\Notepad.exe "log\%yearValue%.csv"
+
+Gui,2:Destroy
+
+Gui +Disabled
+
+; ========== GUI SETTINGS ==========
+Gui,2: -MinimizeBox -MaximizeBox +AlwaysOnTop +OwnDialogs
+Gui,2: Font, s13
+Gui,2: Color, White
+
+Gui,2: Margin, 8, 8
+
+; ========== GUI CONTROLS ==========
+Gui,2: Add, Text, x16 y+18 w60 h%dHeight%+1, %langFrom%
+Gui,2: Add, DateTime, x+m y+-32 w128 h28 vexportFromValue,  
+
+Gui,2: Add, Text, x16 y+18 w60 h%dHeight%+1, %langTo%
+Gui,2: Add, DateTime, x+m y+-32 w128 h28 vexportToValue,  
+
+Gui,2: Add, Text, x16 y+12 w198 h2 0x10
+
+Gui,2: Font, s10
+
+Gui,2: Add, Button, x24 y+12 w90 h%bHeight% +Default gExportEnter, %langOK%
+Gui,2: Add, Button, x+m w90 h%bHeight% gGui2Close, %langCancel%
+
+gui2x := guiX - 20
+
+Gui,2: Show, x%gui2X% y%guiY% w226 h158, %langTooltipExport% - %langLogbook%
+
+Gui,2: +Owner1
+
+Return
+
+
+ExportEnter:
+
+Gui,2: Submit, NoHide
+Gui,2: +OwnDialogs
+
+FormatTime, fileDate, %A_Now%, yyyy-MM-dd
+
+FileSelectFile, selectFile, S16, %A_WorkingDir%\logbook-%fileDate%.html, %langTooltipExport% - %langLogbook%, *.html
+
+if (selectFile)
+{
+
+	
+
+	GoTo, Gui2Close
+
+}
+
 Return
 
 
@@ -835,6 +886,11 @@ else if (glucoseValue > insulinTargetUpper)
 	hyperActive := true
 }
 
+
+Gui2Close:
+	Gui,2:Destroy
+	Gui,1:-Disabled 
+	Return
 
 GuiEscape:
 GuiClose:

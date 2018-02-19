@@ -13,6 +13,8 @@ BolusEffectiveDuration=Bolus Effect Duration
 TargetRange=Target range
 DiabetesDiary=Diabetes Diary
 ShortMinutes=min
+From=Von
+To=Bis
 
 Bolus=Bolus
 Basal=Basal
