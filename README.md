@@ -15,6 +15,26 @@ A lightweight diabetes type I logbook and insulin calculator written with AHK
 
 - Export to different formats and better csv formatting
 
+## bugs to fix
+
+- umbruch?
+
+- export error
+
+- can't add entry between previous entires
+
+- going left too far (when only one entry, when no entries)
+
+- symbol error active insulin
+
+- test other smybols: % äöü 
+
+- add open to context menu, + other stuff?
+
+- add week day to export
+
+- 2 hours after lunch mark
+
 
 ## nonlicense
 

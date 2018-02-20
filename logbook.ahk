@@ -179,6 +179,11 @@ Gui Add, Button, x+m w90 h%bHeight% gGuiClose, %langCancel%
 Placeholder(hFood, langFood)
 Placeholder(hNotes, langNotes)
 
+if (dataArray._MaxIndex() <= 0)
+{
+	GuiControl, Disable, TTLeft
+}
+
 GuiControl, Focus, glucoseValue
 Gui Show, x%guiX% y%guiY% w%guiW% h%guiH%, %langLogbook%
 Return
@@ -983,7 +988,7 @@ if (dataArray._MaxIndex() > 0)
 ; Write new data to log file
 FileAppend,
 (
-"%dateValue%","%timeValue%","%glucoseValue%","%foodValue%","%foodInsulin%","%correctionInsulin%","%totalBolus%","%totalBasal%","%foodText%","%notes%"
+"%dateWrite%","%timeWrite%","%glucoseValue%","%foodValue%","%foodInsulin%","%correctionInsulin%","%totalBolus%","%totalBasal%","%foodText%","%notes%"
 ), log\%yearValue%.csv
 
 
