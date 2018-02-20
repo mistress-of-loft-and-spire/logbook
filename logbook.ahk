@@ -7,10 +7,13 @@
 
 SetWorkingDir %A_ScriptDir%
 
+FileEncoding, UTF-8
+
 #Include include/placeholder.ahk
 #Include include/tooltip.ahk
 #Include include/DateParse.ahk
 #Include include/commapoint.ahk
+#Include include/tf.ahk
 
 ; ========== READ VARS FROM INI ==========
 ReadDatatoArray()
@@ -946,7 +949,11 @@ if (Placeholder(hNotes))
 	notes = 
 }
 
+; Escape Qoutes
+foodText := RegExReplace(foodText, """", """""")
+notes := RegExReplace(notes, """", """""")
 
+/*
 time := DateParse(dateWrite . " " . timeWrite) . "00"
 
 if (dataArray._MaxIndex() > 0)
@@ -971,16 +978,19 @@ if (dataArray._MaxIndex() > 0)
 		
 	}
 }
+*/
 
-Loop % dataArray._MaxIndex() 
-{
+; Write new data to log file
+FileAppend,
+(
+"%dateValue%","%timeValue%","%glucoseValue%","%foodValue%","%foodInsulin%","%correctionInsulin%","%totalBolus%","%totalBasal%","%foodText%","%notes%"
+), log\%yearValue%.csv
 
-	FileAppend,
-	(
-% "`na"
-	), log\%yearValue%.csv
 
-}
+; Update the data array from modified log file
+ReadDatatoArray()
+
+
 
 ; Reset reminder timer
 
