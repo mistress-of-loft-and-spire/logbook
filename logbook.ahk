@@ -428,6 +428,7 @@ ReadDatatoArray()
 {
 	global
 	
+	dataArray := 
 	dataArray := Object()
 	
 	FormatTime, yearValue, %dateValue%, yyyy
@@ -702,12 +703,15 @@ Gui,2: Color, White
 
 Gui,2: Margin, 8, 8
 
+exportDefaultValue := DateParse(dataArray[1,1])
+FormatTime, exportDefaultValue, %exportDefaultValue%, yyyyMMdd
+
 ; ========== GUI CONTROLS ==========
 Gui,2: Add, Text, x16 y+18 w60 h%dHeight%+1, %langFrom%
-Gui,2: Add, DateTime, x+m y+-32 w128 h28 vexportFromValue,  
+Gui,2: Add, DateTime, x+m y+-32 w128 h28 vexportFromValue Choose%exportDefaultValue%, 
 
 Gui,2: Add, Text, x16 y+18 w60 h%dHeight%+1, %langTo%
-Gui,2: Add, DateTime, x+m y+-32 w128 h28 vexportToValue,  
+Gui,2: Add, DateTime, x+m y+-32 w128 h28 vexportToValue, 
 
 Gui,2: Add, Text, x16 y+12 w198 h2 0x10
 
@@ -734,9 +738,91 @@ FormatTime, fileDate, %A_Now%, yyyy-MM-dd
 
 FileSelectFile, selectFile, S16, %A_WorkingDir%\logbook-%fileDate%.html, %langTooltipExport% - %langLogbook%, *.html
 
+htmlDateValue := dataArray[1,1]
+htmlRow :=
+
+htmlBlock :=
+
+htmlTargetStart := Floor(insulinTargetLower / 20)
+htmlTargetEnd := Floor(insulinTargetUpper / 20) - 1
+
+if (htmlTargetStart < 2)
+{
+	htmlTargetStart := 2
+}
+if (htmlTargetEnd > 13)
+{
+	htmlTargetEnd := 13
+}
+
+htmlTitle = logbook %fileDate%
+
+FormatTime, htmlDateStart, %exportFromValue%, dd.MM.yyyy
+FormatTime, htmlDateEnd, %exportToValue%, dd.MM.yyyy
+
 if (selectFile)
 {
 
+	if (dataArray._MaxIndex() > 0)
+	{
+		Loop % dataArray._MaxIndex() 
+		{
+		
+			; ----- add row -----
+			
+			;time + mg/dl
+			htmlRow := htmlRow . "<tr><td>" . dataArray[A_Index,2]
+			
+			htmlGlucoseColumn := Floor(dataArray[A_Index,3] / 20) - 1
+			
+			columnDataIndex := A_Index
+			
+			Loop, 12
+			{
+				htmlRow := htmlRow . "</td><td>"
+				
+				if (A_Index == htmlGlucoseColumn || (A_Index == 1 && A_Index > htmlGlucoseColumn) || (A_Index == 12 && A_Index < htmlGlucoseColumn))
+				{
+					htmlRow := htmlRow . dataArray[columnDataIndex,3]
+				}
+			}
+			
+			htmlRow := htmlRow . "</td>"
+			
+			;be + insulin
+			htmlRow := htmlRow . "<td>" . dataArray[A_Index,4] . "</td><td>" . dataArray[A_Index,5] . "</td><td>" . dataArray[A_Index,6] . "</td>"
+			
+			;bolus + basal
+			htmlRow := htmlRow . "<td>" . dataArray[A_Index,7] . "</td><td>" . dataArray[A_Index,8] . "</td>"
+			
+			;food + notes
+			htmlRow := htmlRow . "<td>" . dataArray[A_Index,9] . "</td><td>" . dataArray[A_Index,10] . "</td></tr>"
+			
+			
+			if(htmlDateValue != dataArray[A_Index+1,1])
+			{
+				;add block
+				
+				FileRead, blockRead, include/html/block.html
+				htmlBlock := htmlBlock . HtmlReplace(blockRead)
+				
+				htmlDateValue := dataArray[A_Index+1,1]
+				htmlRow :=
+			}
+			
+		}
+	}
+	
+	FileRead, htmlOutput, include/html/page.html
+	htmlOutput := HtmlReplace(htmlOutput)
+	
+	
+	ifExist, %selectFile%
+	{
+		FileDelete, %selectFile%
+	}
+	
+	FileAppend, %htmlOutput%, %selectFile%
 	
 
 	GoTo, Gui2Close
@@ -747,9 +833,35 @@ Return
 
 
 
+HtmlReplace(string)
+{
+	global
+	
+	Loop
+	{
+
+		if (RegExMatch(string, "%(.*?)%", match))
+		{
+			match1 := %match1%
+
+			string := RegExReplace(string, "%(.*?)%", match1,,1)
+		}
+		else
+		{
+			Break
+		}
+	
+	}
+	
+	Return string
+}
+
+
+
 Open:
 FormatTime, yearValue, %dateValue%, yyyy
-Run, C:\Windows\Notepad.exe "log\%yearValue%.csv"
+RunWait, C:\Windows\Notepad.exe "log\%yearValue%.csv"
+ReadDatatoArray()
 Return
 
 
@@ -757,7 +869,6 @@ Return
 Settings:
 RunWait, C:\Windows\Notepad.exe "settings.ini"
 ReadGlobals()
-msgbox, Settings Updated!
 Return
 
 
